@@ -10,10 +10,8 @@ client = discord.Client()
 async def on_ready():
     print("We have logged in {0.user}".format(client))
 
-
 @client.event
 async def on_message(message):
-    print(dir(message))
     username = str(message.author).split('#')[0]
     user_message = str(message.content)
     channel = str(message.channel.name)
