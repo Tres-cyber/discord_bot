@@ -15,8 +15,9 @@ class DiscordBot(discord.Client):
             return
 
         if v := message.author.voice:
-            await message.channel.send(f"{message.author.name} is at {v.channel.name}")
+            vc = await v.channel.connect(timeout = 60, reconnect = True)
         else:
             await message.channel.send(f"{message.author.name} is not in a VC")
 
-DiscordBot().run(TOKEN)
+if __name__ == "__main__":
+    DiscordBot().run(TOKEN)
