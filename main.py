@@ -1,42 +1,23 @@
 import discord
-import random
 from TOKEN import TOKEN
 
+class DiscordBot(discord.Client):
+    async def on_ready(self):
+        print("We have logged in {0.user}".format(self))
 
-client = discord.Client()
+    async def on_message(self, message):
+        # Detect that it is not send by self
+        if message.author == self.user:
+            return
 
+        # Detect if message starts with prefix
+        if not message.content.startswith("$"):
+            return
 
-@client.event
-async def on_ready():
-    print("We have logged in {0.user}".format(client))
+        if v := message.author.voice:
+            vc = await v.channel.connect(timeout = 60, reconnect = True)
+        else:
+            await message.channel.send(f"{message.author.name} is not in a VC")
 
-@client.event
-async def on_message(message):
-    username = str(message.author).split('#')[0]
-    user_message = str(message.content)
-    channel = str(message.channel.name)
-    print(f'{username}: {user_message} ({channel})')
-
-    if message.author == client.user:
-        return
-
-    if user_message.lower() == '$hello':
-        await message.channel.send(f'Hellu {username}! ')
-        return
-    elif user_message.lower() == '$bye':
-        await message.channel.send(f'UwU {username}')
-        return
-    elif user_message.lower() == '$fuckyou':
-        await message.channel.send(f'fuck you{username}')
-        return
-    elif user_message.lower() == '$random':
-        response = f'This is ur number: {random.randrange(10000)}'
-        await message.channel.send(response)
-        return
-
-    if message.channel.lower() == '!anywhere':
-        await message.channel.send('Hellu I\'m here')
-        return
-
-client.run(TOKEN)
-
+if __name__ == "__main__":
+    DiscordBot().run(TOKEN)
